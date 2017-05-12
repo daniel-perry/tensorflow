@@ -2187,13 +2187,22 @@ bool CudnnSupport::DoBatchNormalizationBackwardImpl(
   float one = 1.0;
   float zero = 0.0;
 
-  status = wrap::cudnnBatchNormalizationBackward(
+  /*status = wrap::cudnnBatchNormalizationBackward(
       parent_, ToHandle(dnn_handle_), mode, &one, &zero, &one, &zero,
       x_descriptor.handle(), x.opaque(), x_descriptor.handle(),
       y_backprop.opaque(), x_descriptor.handle(), x_backprop->opaque(),
       scale_offset_descriptor.handle(), scale.opaque(),
       scale_backprop->opaque(), offset_backprop->opaque(), epsilon,
       mean.opaque(), variance.opaque());
+			*/
+  status = wrap::cudnnBatchNormalizationBackward(
+      parent_, ToHandle(dnn_handle_), mode, &one, &one, 
+      x_descriptor.handle(), x.opaque(), x_descriptor.handle(),
+      y_backprop.opaque(), x_descriptor.handle(), x_backprop->opaque(),
+      scale_offset_descriptor.handle(), scale.opaque(),
+      scale_backprop->opaque(), offset_backprop->opaque(), epsilon,
+      mean.opaque(), variance.opaque());
+
   if (status != CUDNN_STATUS_SUCCESS) {
     LOG(ERROR) << "failed to enqueue backward batch normalization on stream: "
                << ToString(status);
